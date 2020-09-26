@@ -1,43 +1,28 @@
 package com.kozik.justyna.qrsound
 
 import android.os.Bundle
-import android.util.Log
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.kozik.justyna.qrsound.services.ApiClient
-import com.kozik.justyna.qrsound.services.data.response.SoundResponse
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import retrofit2.Response
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import com.kozik.justyna.qrsound.databinding.ActivityMainBinding
+import com.kozik.justyna.qrsound.ui.viewmodel.QrCodeScannerViewModel
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        testAPI()
+
+
+        val qrCodeScannerViewModel: QrCodeScannerViewModel by viewModels()
+        val binding: ActivityMainBinding =
+            DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding.viewModel = qrCodeScannerViewModel
+
+        qrCodeScannerViewModel.description.observe(this, Observer {
+            binding.descriptionTextView.text = it
+        })
     }
 
-    fun testAPI() {
-        val service = ApiClient().service
-        service.getSound("229e9253-5fe4-49b0-b0b4-29046fca45c8")
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(Schedulers.io())
-            .doOnSuccess { onResponse(it) }
-            .doOnError { onFailure(it) }
-            .subscribe()
-            .dispose()
 
-    }
-
-    fun onFailure(t: Throwable) {
-        Log.d("RESPONSE", "Failed")
-    }
-
-    fun onResponse(soundResponse: Response<SoundResponse>) {
-        if (soundResponse.isSuccessful) {
-            val record = soundResponse.body()
-            Log.d("RESPONSE", "Description: ${record?.description}\n Hash: ${record?.hash}")
-        } else {
-            Log.d("RESPONSE", soundResponse.code().toString())
-        }
-    }
 }
