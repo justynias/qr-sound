@@ -71,4 +71,7 @@ dependencies {
     //Fragment-ktx
     implementation "androidx.fragment:fragment-ktx:1.2.5"
 
+    //google vision
+    implementation 'com.google.android.gms:play-services-vision:20.1.2'
+
 }

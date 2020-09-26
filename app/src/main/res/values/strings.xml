@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">QrSound</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="scan_again">Scan QR code again</string>
 </resources>
