@@ -3,6 +3,8 @@ package com.kozik.justyna.qrsound.ui.fragment
 import android.Manifest
 import android.content.Context.CAMERA_SERVICE
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.graphics.SurfaceTexture
 import android.hardware.camera2.*
 import android.hardware.camera2.params.StreamConfigurationMap
@@ -20,17 +22,14 @@ import androidx.fragment.app.viewModels
 import com.google.android.gms.vision.Frame
 import com.google.android.gms.vision.barcode.Barcode
 import com.google.android.gms.vision.barcode.BarcodeDetector
+import com.kozik.justyna.qrsound.MainActivity
 import com.kozik.justyna.qrsound.databinding.QrCodeScannerFragmentBinding
 import com.kozik.justyna.qrsound.ui.viewmodel.QrCodeScannerViewModel
 import kotlinx.android.synthetic.main.qr_code_scanner_fragment.*
 
 class QrCodeScannerFragment : Fragment() {
     private lateinit var detector: BarcodeDetector
-
-    // private lateinit var imageDimension: Size
     private lateinit var captureRequestBuilder: CaptureRequest.Builder
-
-    //private lateinit var cameraCaptureSession: CameraCaptureSession
     private lateinit var viewModel: QrCodeScannerViewModel
     private var cameraDevice: CameraDevice? = null
 
@@ -41,6 +40,7 @@ class QrCodeScannerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val qrCodeScannerViewModel: QrCodeScannerViewModel by viewModels()
+        viewModel = qrCodeScannerViewModel
         val binding = QrCodeScannerFragmentBinding.inflate(inflater, container, false)
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
@@ -53,6 +53,10 @@ class QrCodeScannerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initQrDecoder()
         initTextureView()
+
+//        qrCodeScannerViewModel.description.observe(this, Observer {
+//            binding.descriptionTextView.text = it
+//        })
     }
 
     private fun initQrDecoder() {
@@ -95,13 +99,29 @@ class QrCodeScannerFragment : Fragment() {
 
                 override fun onSurfaceTextureUpdated(surface: SurfaceTexture?) {
                     Log.d("CAMERA", "onSurfaceTextureUpdated")
-                    val frame: Frame = Frame.Builder().setBitmap(cameraPreview.bitmap).build()
+                    val t = cameraPreview.bitmap
+                    val m = Matrix()
+                    m.postRotate(90.0f)
+
+                    val x = rectanglePreview.x.toInt()
+                    val y = rectanglePreview.y.toInt()
+                    val w = rectanglePreview.width
+                    val h = rectanglePreview.height
+
+                    val test = Bitmap.createBitmap(t, x, y, w, h, m, false)
+                    val frame: Frame = Frame.Builder().setBitmap(test).build()
+
+                    // val frame: Frame = Frame.Builder().setBitmap(cameraPreview.bitmap).build()
                     val barcodes: SparseArray<Barcode> = detector.detect(frame)
                     if (barcodes.isNotEmpty()) {
                         val barcode = barcodes.valueAt(0).displayValue
 
+
                         viewModel.hash.value = barcode
                         Log.d("UPDATED", barcode)
+                        val mainActivity = activity as? MainActivity
+                        mainActivity?.navigateToQrSoundPlayer()
+
 //                    viewModel.updateSoundDescription()
 //                    soundPlayerView.isVisible = true
 //                    qrCodeScannerView.isVisible = false
@@ -109,12 +129,9 @@ class QrCodeScannerFragment : Fragment() {
                         //textureView.surfaceTextureListener = null
                         //textureView.surfaceTexture.release()
 
-                        //cameraDevice?.close()
+                        cameraDevice?.close()
 
-                    } else {
-                        //textView.text = "nothing"
                     }
-
                 }
 
             }

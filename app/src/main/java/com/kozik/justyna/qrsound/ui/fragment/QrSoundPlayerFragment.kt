@@ -28,6 +28,7 @@ class QrSoundPlayerFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         scanAgainButton.setOnClickListener {
             val mainActivity = activity as? MainActivity
             mainActivity?.navigateToQrCodeScanner()

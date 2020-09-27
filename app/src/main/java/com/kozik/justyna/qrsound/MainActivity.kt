@@ -1,32 +1,18 @@
 package com.kozik.justyna.qrsound
 
-import android.hardware.camera2.CameraDevice
-import android.hardware.camera2.CaptureRequest
 import android.os.Bundle
-import android.view.TextureView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.google.android.gms.vision.barcode.BarcodeDetector
 import com.kozik.justyna.qrsound.ui.fragment.QrCodeScannerFragment
 import com.kozik.justyna.qrsound.ui.fragment.QrSoundPlayerFragment
-import com.kozik.justyna.qrsound.ui.viewmodel.QrCodeScannerViewModel
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var detector: BarcodeDetector
-    private lateinit var textureView: TextureView
-
-    // private lateinit var imageDimension: Size
-    private lateinit var captureRequestBuilder: CaptureRequest.Builder
-
-    //private lateinit var cameraCaptureSession: CameraCaptureSession
-    private lateinit var viewModel: QrCodeScannerViewModel
-    private var cameraDevice: CameraDevice? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        navigateToQrSoundPlayer()
+        navigateToQrCodeScanner()
 
 //        val qrCodeScannerViewModel: QrCodeScannerViewModel by viewModels()
 //        viewModel = qrCodeScannerViewModel
@@ -225,13 +211,7 @@ class MainActivity : AppCompatActivity() {
 //        )
 //    }
 
-    //    fun replaceFragment() {
-//        val qrSoundPlayerFragment = QrSoundPlayerFragment()
-//        val transaction = supportFragmentManager.beginTransaction()
-//        transaction.replace(R.id.fragment_placeholder, qrSoundPlayerFragment)
-//        transaction.commit()
-//    }
-//
+
     fun navigateToQrSoundPlayer() {
         navigateToFragment(QrSoundPlayerFragment())
     }
