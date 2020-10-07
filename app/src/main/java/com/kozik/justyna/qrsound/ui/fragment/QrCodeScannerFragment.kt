@@ -32,17 +32,14 @@ import kotlinx.android.synthetic.main.qr_code_scanner_fragment.*
 class QrCodeScannerFragment : Fragment() {
     private lateinit var detector: BarcodeDetector
     private lateinit var captureRequestBuilder: CaptureRequest.Builder
-    private lateinit var viewModel: QrCodeScannerViewModel
+    private val qrCodeScannerViewModel: QrCodeScannerViewModel by viewModels()
     private var cameraDevice: CameraDevice? = null
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val qrCodeScannerViewModel: QrCodeScannerViewModel by viewModels()
-        viewModel = qrCodeScannerViewModel
         val binding = QrCodeScannerFragmentBinding.inflate(inflater, container, false)
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
@@ -55,10 +52,6 @@ class QrCodeScannerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initQrDecoder()
         initTextureView()
-
-//        qrCodeScannerViewModel.description.observe(this, Observer {
-//            binding.descriptionTextView.text = it
-//        })
     }
 
     private fun initQrDecoder() {
@@ -117,23 +110,11 @@ class QrCodeScannerFragment : Fragment() {
                     val barcodes: SparseArray<Barcode> = detector.detect(frame)
                     if (barcodes.isNotEmpty()) {
                         val barcode = barcodes.valueAt(0).displayValue
-                        Log.d("UPDATED", barcode)
-
-                        viewModel.hash.value = barcode
-                        viewModel.onQrCodeDetected(barcode)
-                        Log.d("UPDATED", barcode)
+                        qrCodeScannerViewModel.hash.value = barcode
+                        qrCodeScannerViewModel.onQrCodeDetected(barcode)
                         val mainActivity = activity as? MainActivity
                         mainActivity?.navigateToQrSoundPlayer()
-
-//                    viewModel.updateSoundDescription()
-//                    soundPlayerView.isVisible = true
-//                    qrCodeScannerView.isVisible = false
-
-                        //textureView.surfaceTextureListener = null
-                        //textureView.surfaceTexture.release()
-
                         cameraDevice?.close()
-
                     }
                 }
 

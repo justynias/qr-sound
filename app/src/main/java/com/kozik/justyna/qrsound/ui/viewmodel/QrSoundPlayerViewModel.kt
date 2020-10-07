@@ -24,22 +24,22 @@ class QrSoundPlayerViewModel @ViewModelInject constructor(
 ) : ViewModel(), LifecycleObserver {
     private val service = ApiClient().service
     private val mediaPlayer = MediaPlayer()
-    val hash: MutableLiveData<String> = MutableLiveData()
+    private var hash: String? = null
     val description = MutableLiveData<String>()
     val isSoundPlayed = MutableLiveData<Boolean>(false)
 
-    fun updateSoundDescription() {
-        service.getSound(hash.value.toString())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(Schedulers.io())
-            .subscribe({ it -> onResponse(it) }, { it -> onFailure(it) })
-
+    init {
+        hash = repository.hash
+        updateSoundDescription()
     }
 
-    fun onScanAgainClicked() {
-        onStopSoundClicked()
-        hash.value = null
-        description.value = null
+    private fun updateSoundDescription() {
+        if (!hash.isNullOrEmpty()) {
+            service.getSound(hash.toString())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ it -> onResponse(it) }, { it -> onFailure(it) })
+        }
     }
 
     private fun onFailure(t: Throwable) {
@@ -68,7 +68,7 @@ class QrSoundPlayerViewModel @ViewModelInject constructor(
     }
 
     fun onStartSoundClicked() {
-        val url = "${BuildConfig.API_KEY}public/${hash.value}"
+        val url = "${BuildConfig.API_KEY}public/${hash}"
         mediaPlayer.setDataSource(url)
         mediaPlayer.prepare()
 

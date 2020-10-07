@@ -13,7 +13,8 @@ class QrCodeScannerViewModel @ViewModelInject constructor(
     private val repository: QrSoundRepository
 ) : ViewModel(), LifecycleObserver {
     val hash: MutableLiveData<String> = MutableLiveData()
+
     fun onQrCodeDetected(barCode: String) {
-        repository.hash = barCode
+        repository.setHash(barCode)
     }
 }
