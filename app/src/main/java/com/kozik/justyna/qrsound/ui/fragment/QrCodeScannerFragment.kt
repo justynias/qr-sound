@@ -25,8 +25,10 @@ import com.google.android.gms.vision.barcode.BarcodeDetector
 import com.kozik.justyna.qrsound.MainActivity
 import com.kozik.justyna.qrsound.databinding.QrCodeScannerFragmentBinding
 import com.kozik.justyna.qrsound.ui.viewmodel.QrCodeScannerViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.qr_code_scanner_fragment.*
 
+@AndroidEntryPoint
 class QrCodeScannerFragment : Fragment() {
     private lateinit var detector: BarcodeDetector
     private lateinit var captureRequestBuilder: CaptureRequest.Builder
@@ -115,9 +117,10 @@ class QrCodeScannerFragment : Fragment() {
                     val barcodes: SparseArray<Barcode> = detector.detect(frame)
                     if (barcodes.isNotEmpty()) {
                         val barcode = barcodes.valueAt(0).displayValue
-
+                        Log.d("UPDATED", barcode)
 
                         viewModel.hash.value = barcode
+                        viewModel.onQrCodeDetected(barcode)
                         Log.d("UPDATED", barcode)
                         val mainActivity = activity as? MainActivity
                         mainActivity?.navigateToQrSoundPlayer()

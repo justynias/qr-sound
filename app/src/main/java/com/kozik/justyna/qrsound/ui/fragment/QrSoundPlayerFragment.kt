@@ -9,8 +9,10 @@ import androidx.fragment.app.viewModels
 import com.kozik.justyna.qrsound.MainActivity
 import com.kozik.justyna.qrsound.databinding.QrSoundPlayerFragmentBinding
 import com.kozik.justyna.qrsound.ui.viewmodel.QrSoundPlayerViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.qr_sound_player_fragment.*
 
+@AndroidEntryPoint
 class QrSoundPlayerFragment : Fragment() {
 
     override fun onCreateView(
