@@ -110,6 +110,8 @@ class QrCodeScannerFragment : Fragment() {
                     val barcodes: SparseArray<Barcode> = detector.detect(frame)
                     if (barcodes.isNotEmpty()) {
                         val barcode = barcodes.valueAt(0).displayValue
+
+                        //TODO here handle if the qr exist on our backend
                         qrCodeScannerViewModel.hash.value = barcode
                         qrCodeScannerViewModel.onQrCodeDetected(barcode)
                         val mainActivity = activity as? MainActivity
@@ -122,6 +124,7 @@ class QrCodeScannerFragment : Fragment() {
         cameraPreview.surfaceTextureListener = textureListener
     }
 
+    //TODO
     //    /** Check if this device has a camera */
 //    private fun checkCameraHardware(context: Context): Boolean {
 //        if (context.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA)) {

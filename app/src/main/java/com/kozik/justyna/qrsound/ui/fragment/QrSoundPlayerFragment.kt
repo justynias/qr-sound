@@ -34,7 +34,8 @@ class QrSoundPlayerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         scanAgainButton.setOnClickListener {
-            qrSoundPlayerViewModel.onStartSoundClicked()
+            qrSoundPlayerViewModel.onStopSoundClicked()
+            //TODO wait if it really stops?
             val mainActivity = activity as? MainActivity
             mainActivity?.navigateToQrCodeScanner()
         }
@@ -50,4 +51,10 @@ class QrSoundPlayerFragment : Fragment() {
                 }
             })
     }
+
+    override fun onPause() {
+        super.onPause()
+        qrSoundPlayerViewModel.onStopSoundClicked()
+    }
+
 }
