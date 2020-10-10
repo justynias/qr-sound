@@ -33,6 +33,7 @@ class QrSoundPlayerViewModel @ViewModelInject constructor(
         updateSoundDescription()
     }
 
+
     private fun updateSoundDescription() {
         if (!hash.isNullOrEmpty()) {
             service.getSound(hash.toString())
@@ -53,17 +54,9 @@ class QrSoundPlayerViewModel @ViewModelInject constructor(
             description.value = soundResponse.code().toString()
         }
     }
-//
-//    fun onStartStopSoundClicked() {
-//        if (mediaPlayer.isPlaying) {
-//            stopPlayingSound()
-//        }  else {
-//
-//            startPlayingSound()
-//        }
-//    }
 
     fun onStopSoundClicked() {
+        isSoundPlayed.value = false
         mediaPlayer.reset()
     }
 
@@ -82,8 +75,8 @@ class QrSoundPlayerViewModel @ViewModelInject constructor(
         timer.schedule(object : TimerTask() {
             override fun run() {
                 // runOnUiThread {
-                Log.d("PLAYER", "Current position: ${mediaPlayer.currentPosition}")
-                Log.d("PLAYER", "amoungToupdate: ${amoungToupdate}")
+//                Log.d("PLAYER", "Current position: ${mediaPlayer.currentPosition}")
+//                Log.d("PLAYER", "amoungToupdate: ${amoungToupdate}")
                 //}
             }
         }, 0, amoungToupdate)
@@ -98,3 +91,4 @@ class QrSoundPlayerViewModel @ViewModelInject constructor(
     }
 
 }
+

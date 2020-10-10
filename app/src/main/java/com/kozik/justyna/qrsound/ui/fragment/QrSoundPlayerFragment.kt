@@ -1,6 +1,11 @@
 package com.kozik.justyna.qrsound.ui.fragment
 
+import android.content.Context
+import android.media.AudioAttributes
+import android.media.AudioFocusRequest
+import android.media.AudioManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,9 +40,36 @@ class QrSoundPlayerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         scanAgainButton.setOnClickListener {
             qrSoundPlayerViewModel.onStopSoundClicked()
-            //TODO wait if it really stops?
+            //TODO wait for the media player when really stops
             val mainActivity = activity as? MainActivity
             mainActivity?.navigateToQrCodeScanner()
+        }
+        startSoundButton.setOnClickListener {
+            //request for the audio focus
+            val audioManager = activity?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            val focusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN).run {
+                setAudioAttributes(AudioAttributes.Builder().run {
+                    setUsage(AudioAttributes.USAGE_GAME)
+                    setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    build()
+                })
+                setAcceptsDelayedFocusGain(true)
+
+                setOnAudioFocusChangeListener(afChangeListener)
+                build()
+            }
+            val focusLock = Any()
+            val request = audioManager.requestAudioFocus(focusRequest)
+
+            synchronized(focusLock) {
+                //TODO throw error message?
+                when (request) {
+                    AudioManager.AUDIOFOCUS_REQUEST_FAILED -> Log.d("FOCUS", "LREQUEST_FAILED")
+                    AudioManager.AUDIOFOCUS_REQUEST_GRANTED -> qrSoundPlayerViewModel.onStartSoundClicked()
+                    AudioManager.AUDIOFOCUS_REQUEST_DELAYED -> Log.d("FOCUS", "LREQUEST_DELAYED")
+                    else -> Log.d("FOCUS", "else")
+                }
+            }
         }
         qrSoundPlayerViewModel.isSoundPlayed.observe(
             this.viewLifecycleOwner,
@@ -52,9 +84,21 @@ class QrSoundPlayerFragment : Fragment() {
             })
     }
 
-    override fun onPause() {
-        super.onPause()
-        qrSoundPlayerViewModel.onStopSoundClicked()
-    }
 
+    private val afChangeListener = AudioManager.OnAudioFocusChangeListener { focusChange ->
+        when (focusChange) {
+            AudioManager.AUDIOFOCUS_LOSS -> {
+                qrSoundPlayerViewModel.onStopSoundClicked()
+            }
+            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
+                qrSoundPlayerViewModel.onStopSoundClicked()
+            }
+            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
+                qrSoundPlayerViewModel.onStopSoundClicked()
+            }
+            AudioManager.AUDIOFOCUS_GAIN -> {
+                qrSoundPlayerViewModel.onStartSoundClicked()
+            }
+        }
+    }
 }

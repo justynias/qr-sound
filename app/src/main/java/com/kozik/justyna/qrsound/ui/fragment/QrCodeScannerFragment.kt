@@ -11,7 +11,6 @@ import android.hardware.camera2.params.StreamConfigurationMap
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
-import android.util.Log
 import android.util.SparseArray
 import android.view.*
 import android.widget.Toast
@@ -34,6 +33,7 @@ class QrCodeScannerFragment : Fragment() {
     private lateinit var captureRequestBuilder: CaptureRequest.Builder
     private val qrCodeScannerViewModel: QrCodeScannerViewModel by viewModels()
     private var cameraDevice: CameraDevice? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -93,7 +93,6 @@ class QrCodeScannerFragment : Fragment() {
                 }
 
                 override fun onSurfaceTextureUpdated(surface: SurfaceTexture?) {
-                    Log.d("CAMERA", "onSurfaceTextureUpdated")
                     val t = cameraPreview.bitmap
                     val m = Matrix()
                     m.postRotate(90.0f)
@@ -106,17 +105,17 @@ class QrCodeScannerFragment : Fragment() {
                     val test = Bitmap.createBitmap(t, x, y, w, h, m, false)
                     val frame: Frame = Frame.Builder().setBitmap(test).build()
 
-                    // val frame: Frame = Frame.Builder().setBitmap(cameraPreview.bitmap).build()
                     val barcodes: SparseArray<Barcode> = detector.detect(frame)
                     if (barcodes.isNotEmpty()) {
                         val barcode = barcodes.valueAt(0).displayValue
 
-                        //TODO here handle if the qr exist on our backend
+                       //TODO here handle if the qr exist on our backend
                         qrCodeScannerViewModel.hash.value = barcode
                         qrCodeScannerViewModel.onQrCodeDetected(barcode)
                         val mainActivity = activity as? MainActivity
                         mainActivity?.navigateToQrSoundPlayer()
                         cameraDevice?.close()
+
                     }
                 }
 
@@ -193,7 +192,6 @@ class QrCodeScannerFragment : Fragment() {
                     }, null)
                 }
 
-
             }
 
             override fun onDisconnected(camera: CameraDevice) {
@@ -213,8 +211,6 @@ class QrCodeScannerFragment : Fragment() {
 
     fun updatePreview(cameraCaptureSession: CameraCaptureSession) {
         captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO)
-
-        Log.d("CAMERA", "test")
         val thread = HandlerThread("Camera Thread")
         thread.start()
         val mBackgroundHandler = Handler(thread.looper)
@@ -224,4 +220,6 @@ class QrCodeScannerFragment : Fragment() {
             mBackgroundHandler
         )
     }
+
+
 }
