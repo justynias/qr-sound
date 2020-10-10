@@ -18,6 +18,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.util.isNotEmpty
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.google.android.gms.vision.Frame
 import com.google.android.gms.vision.barcode.Barcode
 import com.google.android.gms.vision.barcode.BarcodeDetector
@@ -52,6 +53,10 @@ class QrCodeScannerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initQrDecoder()
         initTextureView()
+
+        qrCodeScannerViewModel.detectedSound.observe(this.viewLifecycleOwner, Observer {
+            onSoundDetected()
+        })
     }
 
     private fun initQrDecoder() {
@@ -110,11 +115,7 @@ class QrCodeScannerFragment : Fragment() {
                         val barcode = barcodes.valueAt(0).displayValue
 
                        //TODO here handle if the qr exist on our backend
-                        qrCodeScannerViewModel.hash.value = barcode
                         qrCodeScannerViewModel.onQrCodeDetected(barcode)
-                        val mainActivity = activity as? MainActivity
-                        mainActivity?.navigateToQrSoundPlayer()
-                        cameraDevice?.close()
 
                     }
                 }
@@ -221,5 +222,10 @@ class QrCodeScannerFragment : Fragment() {
         )
     }
 
+    private fun onSoundDetected() {
+        val mainActivity = activity as? MainActivity
+        mainActivity?.navigateToQrSoundPlayer()
+        cameraDevice?.close()
+    }
 
 }
