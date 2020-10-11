@@ -23,6 +23,7 @@ class QrCodeScannerViewModel @ViewModelInject constructor(
     val isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
 
     fun onQrCodeDetected(barCode: String) {
+        isLoading.value = true
         repository.getSound(barCode)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
@@ -35,25 +36,25 @@ class QrCodeScannerViewModel @ViewModelInject constructor(
                 repository.setSound(it)
                 //TODO observe only repo values
                 detectedSound.value = it
-
+                isLoading.value = false
             }
 
         } else if (soundResponse.code() == 404) {
             error.value = "This qr code does not exist in our database"
             isErrorVisible.value = true
-            //TODO error handling, Qr code was recognized, but its not in our db
-        } else {
+            isLoading.value = false
+        } else if (soundResponse.code() != 200) {
             error.value = "There was some issue, please check your network connection"
             isErrorVisible.value = true
-            //TODO general error handling
+            isLoading.value = false
         }
     }
 
     private fun onFailure(t: Throwable) {
-        //TODO general error handling (check the internet connection etc)
         Log.d("RESPONSE", "Failed, t: ${t.message}")
         error.value = "There was some issue, please check your network connection"
         isErrorVisible.value = true
+        isLoading.value = false
     }
 
     fun OnTryAgainClicked() {

@@ -61,8 +61,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginBottom="48dp"
-            android:background="@drawable/outline_rounded_background"
-            android:textColor="@color/colorDark" />
+            android:background="@drawable/outline_rounded_background" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/errorMaterialCard"
@@ -99,14 +98,14 @@
                     android:textColor="@color/colorPrimary"
                     android:onClick="@{() -> viewModel.OnTryAgainClicked()}" />
 
+                <include
+                    android:id="@+id/loadingView"
+                    layout="@layout/loading"
+                    app:visible="@{viewModel.isLoading}" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.google.android.material.card.MaterialCardView>
-
-        <include
-            android:id="@+id/loadingView"
-            layout="@layout/loading"
-            app:visible="@{viewModel.isLoading}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
