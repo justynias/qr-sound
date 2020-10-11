@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModel
 import com.kozik.justyna.qrsound.BuildConfig
 import com.kozik.justyna.qrsound.repository.QrSoundRepository
 import com.kozik.justyna.qrsound.services.data.response.SoundResponse
-import java.util.*
 
 
 class QrSoundPlayerViewModel @ViewModelInject constructor(
@@ -21,6 +20,8 @@ class QrSoundPlayerViewModel @ViewModelInject constructor(
     private var sound: SoundResponse? = null
     val description = MutableLiveData<String>()
     val isSoundPlayed = MutableLiveData<Boolean>(false)
+    val error: MutableLiveData<String> = MutableLiveData(null)
+    val isErrorVisible: MutableLiveData<Boolean> = MutableLiveData(false)
 
     init {
         updateSoundDescription()
@@ -38,35 +39,32 @@ class QrSoundPlayerViewModel @ViewModelInject constructor(
 
     fun onStartSoundClicked() {
         sound?.let {
-            val url = "${BuildConfig.API_KEY}public/${"it.hash"}"
-            mediaPlayer.setDataSource(url)
-            mediaPlayer.prepare()
-            // if the url does not exist -> app is lagging and error
+            val url = "${BuildConfig.API_KEY}public/${it.hash}"
 
-            val duration = mediaPlayer.duration.toLong()
-            val amoungToupdate = duration / 100.toLong()
+            try {
+                mediaPlayer.setDataSource(url)
+                mediaPlayer.prepare()//Async()
+            } catch (e: Exception) {
+                error.value = "There was some issue, please check your network connection"
+                isErrorVisible.value = true
+            }
 
-
-            mediaPlayer.start()
-            isSoundPlayed.value = true
-            val timer = Timer()
-            timer.schedule(object : TimerTask() {
-                override fun run() {
-                    // runOnUiThread {
-//                Log.d("PLAYER", "Current position: ${mediaPlayer.currentPosition}")
-//                Log.d("PLAYER", "amoungToupdate: ${amoungToupdate}")
-                    //}
-                }
-            }, 0, amoungToupdate)
+            mediaPlayer.setOnPreparedListener {
+                mediaPlayer.start()
+                isSoundPlayed.value = true
+            }
 
             mediaPlayer.setOnCompletionListener {
-                timer.cancel()
+
                 mediaPlayer.reset()
                 isSoundPlayed.value = false
             }
         }
 
+    }
 
+    fun OnTryAgainClicked() {
+        isErrorVisible.value = false
     }
 
 }
