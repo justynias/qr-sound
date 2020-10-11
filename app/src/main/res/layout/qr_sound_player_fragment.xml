@@ -22,26 +22,33 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:textSize="16dp"
+            android:textColor="@color/colorDark"
             android:text="@{viewModel.description}" />
 
-        <Button
+
+        <ImageButton
             android:id="@+id/startSoundButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/start"
+            android:src="@drawable/ic_play_black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/descriptionTextView" />
+            app:layout_constraintTop_toBottomOf="@id/descriptionTextView"
+            android:background="@android:color/transparent"
+            android:layout_marginTop="24dp" />
 
-        <Button
+        <ImageButton
             android:id="@+id/stopSoundButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="@{() -> viewModel.onStopSoundClicked()}"
-            android:text="@string/stop"
+            android:src="@drawable/ic_stop_black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/descriptionTextView" />
+            app:layout_constraintTop_toBottomOf="@id/descriptionTextView"
+            android:background="@android:color/transparent"
+            android:layout_marginTop="24dp" />
 
         <Button
             android:id="@+id/scanAgainButton"
@@ -50,7 +57,10 @@
             android:text="@string/scan_again"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="48dp"
+            android:background="@drawable/outline_rounded_background"
+            android:textColor="@color/colorDark" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

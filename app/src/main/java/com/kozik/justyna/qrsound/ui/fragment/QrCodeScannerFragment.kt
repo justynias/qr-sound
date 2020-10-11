@@ -16,6 +16,7 @@ import android.view.*
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.util.isNotEmpty
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -56,6 +57,9 @@ class QrCodeScannerFragment : Fragment() {
 
         qrCodeScannerViewModel.detectedSound.observe(this.viewLifecycleOwner, Observer {
             onSoundDetected()
+        })
+        qrCodeScannerViewModel.isErrorVisible.observe(this.viewLifecycleOwner, Observer {
+            errorMaterialCard.isVisible = it
         })
     }
 

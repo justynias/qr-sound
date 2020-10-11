@@ -93,4 +93,6 @@ dependencies {
     kapt 'androidx.hilt:hilt-compiler:1.0.0-alpha01'
     kapt 'com.google.dagger:hilt-android-compiler:2.28-alpha'
 
+    //material design
+    implementation 'com.google.android.material:material:1.2.1'
 }

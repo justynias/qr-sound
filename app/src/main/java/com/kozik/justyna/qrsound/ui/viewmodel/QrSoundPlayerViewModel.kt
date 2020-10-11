@@ -38,9 +38,10 @@ class QrSoundPlayerViewModel @ViewModelInject constructor(
 
     fun onStartSoundClicked() {
         sound?.let {
-            val url = "${BuildConfig.API_KEY}public/${it.hash}"
+            val url = "${BuildConfig.API_KEY}public/${"it.hash"}"
             mediaPlayer.setDataSource(url)
             mediaPlayer.prepare()
+            // if the url does not exist -> app is lagging and error
 
             val duration = mediaPlayer.duration.toLong()
             val amoungToupdate = duration / 100.toLong()

@@ -18,6 +18,8 @@ class QrCodeScannerViewModel @ViewModelInject constructor(
     private val repository: QrSoundRepository
 ) : ViewModel(), LifecycleObserver {
     val detectedSound: MutableLiveData<SoundResponse> = MutableLiveData()
+    val error: MutableLiveData<String> = MutableLiveData(null)
+    val isErrorVisible: MutableLiveData<Boolean> = MutableLiveData(false)
 
     fun onQrCodeDetected(barCode: String) {
         repository.getSound(barCode)
@@ -32,11 +34,16 @@ class QrCodeScannerViewModel @ViewModelInject constructor(
                 repository.setSound(it)
                 //TODO observe only repo values
                 detectedSound.value = it
+
             }
 
         } else if (soundResponse.code() == 404) {
+            error.value = "This qr code does not exist in our database"
+            isErrorVisible.value = true
             //TODO error handling, Qr code was recognized, but its not in our db
         } else {
+            error.value = "There was some issue, please check your network connection"
+            isErrorVisible.value = true
             //TODO general error handling
         }
     }
@@ -44,6 +51,12 @@ class QrCodeScannerViewModel @ViewModelInject constructor(
     private fun onFailure(t: Throwable) {
         //TODO general error handling (check the internet connection etc)
         Log.d("RESPONSE", "Failed, t: ${t.message}")
+        error.value = "There was some issue, please check your network connection"
+        isErrorVisible.value = true
+    }
+
+    fun OnTryAgainClicked() {
+        isErrorVisible.value = false
     }
 
 }
