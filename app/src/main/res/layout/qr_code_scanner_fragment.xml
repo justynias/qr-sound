@@ -24,7 +24,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            style="@style/MaterialCard">
+            style="@style/MaterialCard"
+            app:visible="@{viewModel.isErrorVisible}">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -73,6 +74,10 @@
             android:src="@drawable/rectangle"
             android:textAlignment="center" />
 
+        <include
+            android:id="@+id/loadingView"
+            layout="@layout/loading"
+            app:visible="@{viewModel.isLoading}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

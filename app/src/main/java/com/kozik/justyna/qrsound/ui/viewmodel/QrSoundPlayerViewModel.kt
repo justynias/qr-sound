@@ -22,6 +22,7 @@ class QrSoundPlayerViewModel @ViewModelInject constructor(
     val isSoundPlayed = MutableLiveData<Boolean>(false)
     val error: MutableLiveData<String> = MutableLiveData(null)
     val isErrorVisible: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
 
     init {
         updateSoundDescription()
@@ -39,23 +40,26 @@ class QrSoundPlayerViewModel @ViewModelInject constructor(
 
     fun onStartSoundClicked() {
         sound?.let {
+            isLoading.value = true
             val url = "${BuildConfig.API_KEY}public/${it.hash}"
 
             try {
                 mediaPlayer.setDataSource(url)
-                mediaPlayer.prepare()//Async()
+                mediaPlayer.prepareAsync()
             } catch (e: Exception) {
                 error.value = "There was some issue, please check your network connection"
                 isErrorVisible.value = true
+                isLoading.value = false
             }
 
+            //TODO listen to errors when media player prepareAsync
             mediaPlayer.setOnPreparedListener {
                 mediaPlayer.start()
                 isSoundPlayed.value = true
+                isLoading.value = false
             }
 
             mediaPlayer.setOnCompletionListener {
-
                 mediaPlayer.reset()
                 isSoundPlayed.value = false
             }

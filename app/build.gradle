@@ -95,4 +95,8 @@ dependencies {
 
     //material design
     implementation 'com.google.android.material:material:1.2.1'
+
+    //lottie animation
+    implementation "com.airbnb.android:lottie:3.4.0"
+
 }

@@ -1,6 +1,5 @@
 package com.kozik.justyna.qrsound.repository
 
-
 import com.kozik.justyna.qrsound.services.ApiClient
 import com.kozik.justyna.qrsound.services.data.response.SoundResponse
 import io.reactivex.Single
@@ -13,6 +12,12 @@ class QrSoundRepository @Inject constructor() {
     //TODO inject it
     private val apiClientService = ApiClient().service
 
+    // var sub: BehaviorSubject<SoundResponse> = BehaviorSubject.create()
+//
+//    var field: ObservableField<SoundResponse> = ObservableField()\
+
+    //    fun name(): Observable<String>
+//    fun saveName(name: String): Completable
     //TODO observe it
     val sound: SoundResponse?
         get() = _sound
@@ -22,7 +27,7 @@ class QrSoundRepository @Inject constructor() {
     }
 
     fun getSound(hash: String): Single<Response<SoundResponse>> {
-        return apiClientService.getSound("hash")
+        return apiClientService.getSound(hash)
     }
 
 }

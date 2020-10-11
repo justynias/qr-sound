@@ -20,6 +20,7 @@ class QrCodeScannerViewModel @ViewModelInject constructor(
     val detectedSound: MutableLiveData<SoundResponse> = MutableLiveData()
     val error: MutableLiveData<String> = MutableLiveData(null)
     val isErrorVisible: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
 
     fun onQrCodeDetected(barCode: String) {
         repository.getSound(barCode)
