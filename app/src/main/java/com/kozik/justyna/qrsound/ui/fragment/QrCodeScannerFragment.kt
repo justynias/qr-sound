@@ -142,30 +142,6 @@ class QrCodeScannerFragment : Fragment() {
         val map: StreamConfigurationMap =
             characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)!!
         val imageDimension = map.getOutputSizes(SurfaceTexture::class.java)[0]
-        if ((ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.CAMERA
-            ) != PackageManager.PERMISSION_GRANTED) || (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED)
-        ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            this.activity?.let {
-                ActivityCompat.requestPermissions(
-                    it, arrayOf(
-                        Manifest.permission.CAMERA
-                        //Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    ), 1
-                )
-            }
-        }
 
         val callback: CameraDevice.StateCallback = object : CameraDevice.StateCallback() {
             override fun onOpened(camera: CameraDevice) {
@@ -176,7 +152,7 @@ class QrCodeScannerFragment : Fragment() {
 
                 cameraDevice?.let {
                     captureRequestBuilder =
-                        cameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
+                        it.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
                     captureRequestBuilder.addTarget(surface)
 
                     cameraDevice?.createCaptureSession(listOf(surface), object :
@@ -207,7 +183,15 @@ class QrCodeScannerFragment : Fragment() {
             }
 
         }
-        manager.openCamera(firstID, callback, null)
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.CAMERA
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        } else {
+            manager.openCamera(firstID, callback, null)
+        }
     }
 
     fun updatePreview(cameraCaptureSession: CameraCaptureSession) {
