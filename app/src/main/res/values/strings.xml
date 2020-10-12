@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">QrSound</string>
     <string name="scan_again">Scan QR code again</string>
+    <string name="splash_screen">Splash Screen!</string>
 </resources>

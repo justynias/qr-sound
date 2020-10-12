@@ -160,8 +160,8 @@ class QrCodeScannerFragment : Fragment() {
             this.activity?.let {
                 ActivityCompat.requestPermissions(
                     it, arrayOf(
-                        Manifest.permission.CAMERA,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        Manifest.permission.CAMERA
+                        //Manifest.permission.WRITE_EXTERNAL_STORAGE
                     ), 1
                 )
             }
